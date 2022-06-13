@@ -1,57 +1,59 @@
 import React from 'react';
 import './App.css';
-import TableList from './TableList.js';
+import Stories from './Stories.js';
 
-  
-function App() {
+
+
+const App = () => {
+  const handleSearch = event => {
+    console.log(event.target.value)
+  }
+
   return (
     <div>
-
       <h1>My Hacker Stories</h1>
-      <SearchInput />
+      <SearchInput onSearch={handleSearch} />
       <hr />
 
-    {TableList.map( item => {
-      if(item.date > 2013) 
-      {
-      return <List key={item.objectID}  
-        author={item.author}
-        num_comments={item.num_comments}
-        points={item.points}
-        date={item.date} />
-      } else { 
-        return null 
-      }
-    })}
-
+      <List list={Stories} />
     </div>
   );
 }
 
-function List (props) {
-  
-        return(
-          <div>
-            <span>
-              <a href='{props.url}'>{props.title}</a>
-            </span>
-            <span> Author: {props.author}</span>
-            <span> Comments: {props.num_comments}</span>
-            <span> Points: {props.points}</span>
-            <span> Date: {props.date}</span>
-          </div>);
-      
-    }
-  ;
+const List = props =>
+  props.list.map(item =>(
+    <div key={item.objectID}>
+      <span>
+        <a href={item.url}>{item.title}</a>
+      </span>
+      <span> Author: {item.author}</span>
+      <span> Comments: {item.num_comments}</span>
+      <span> Points: {item.points}</span>
+      <span> Date: {item.date}</span>
+    </div>
+  ))
 
-function SearchInput () {
-  return (
+const SearchInput = props => {
+  const [searchTerm, setSearchTerm] = React.useState('');
+
+  const handleChange = event => {
+    setSearchTerm(event.target.value);
+
+  props.onSearch(event);  
+  };
+
+  return ( 
     <div>
       <label htmlFor="search">Search: </label>
-      <input id="search" type="text" />
+      <input id="search" type="text" onChange={handleChange}/>
+
+      <p>
+        Searching for <strong>{searchTerm}</strong>
+      </p>
     </div>
   );
-}
+};
+
 
 
 
