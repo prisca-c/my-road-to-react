@@ -6,10 +6,11 @@ import Stories from './Stories.js';
 
 const App = () => {
 
-  const [searchTerm, setSearchTerm] = React.useState('');
+  const [searchTerm, setSearchTerm] = React.useState('React');
 
   const handleSearch = event => {
-    setSearchTerm(event.target.value)
+    setSearchTerm(event.target.value);
+    
   }
 
   const searchedStories = Stories.filter(story =>
@@ -20,8 +21,7 @@ const App = () => {
     <div>
       <h1>My Hacker Stories</h1>
 
-      <SearchInput onSearch={handleSearch} />
-
+      <SearchInput search={searchTerm} onSearch={handleSearch} />
       <hr />
 
       <List list={searchedStories} />
@@ -29,8 +29,12 @@ const App = () => {
   );
 }
 
-const List = props =>
-  props.list.map(item =>(
+const List = ({ list }) =>
+  list.map(item => 
+    <Item key={item.objectID} item={item} />
+);
+    
+const Item = ({ item }) => (
     <div key={item.objectID}>
       <span>
         <a href={item.url}>{item.title}</a>
@@ -40,18 +44,23 @@ const List = props =>
       <span> Points: {item.points}</span>
       <span> Date: {item.date}</span>
     </div>
-  ))
+);
 
-const SearchInput = props => (
-  
+const SearchInput = ({ search, onSearch }) => {
 
+  return (
     <div>
       <label htmlFor="search">Search: </label>
-      <input id="search" type="text" onChange={props.onSearch}/>
+      <input 
+        id="search" 
+        type="text"
+        value={search} 
+        onChange={onSearch}
+      />
 
     </div>
-
-);
+  )
+};
 
 
 
