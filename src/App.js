@@ -3,16 +3,25 @@ import './App.css';
 import Stories from './Stories.js';
 
 
-
-const App = () => {
-
-  const [searchTerm, setSearchTerm] = React.useState(
-    localStorage.getItem('search') || 'React'
+const useSemiPersitentState = ( key, initialState ) => {
+  
+  const [value, setValue] = React.useState(
+    localStorage.getItem(key) || initialState
   );
 
   React.useEffect(() => {
-    localStorage.setItem('search', searchTerm);
-  }, [searchTerm]);
+    localStorage.setItem(key, value);
+  }, [value, key]);
+
+  return [value, setValue];
+}
+
+const App = () => {
+
+const [searchTerm, setSearchTerm] = useSemiPersitentState(
+  'search',
+  'React'
+);
 
   const handleSearch = event => {
     setSearchTerm(event.target.value);
