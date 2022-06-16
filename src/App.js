@@ -1,10 +1,9 @@
 import React from 'react';
 import './App.css';
-import Stories from './Stories.js';
+import initialStories from './Stories.js';
 
 
-const useSemiPersitentState = ( key, initialState ) => {
-  
+const useSemiPersistentState = ( key, initialState ) => {
   const [value, setValue] = React.useState(
     localStorage.getItem(key) || initialState
   );
@@ -17,17 +16,27 @@ const useSemiPersitentState = ( key, initialState ) => {
 }
 
 const App = () => {
+  const [searchTerm, setSearchTerm] = useSemiPersistentState(
+    'search',
+    'React'
+  );
 
-const [searchTerm, setSearchTerm] = useSemiPersitentState(
-  'search',
-  'React'
-);
+  const [stories, setStories] = React.useState(initialStories);
+
+  const handleRemoveStory = item => {
+    const newStories = stories.filter(
+      story => item.objectID !== story.objectID
+    );
+
+    setStories(newStories);
+  };
+
 
   const handleSearch = event => {
     setSearchTerm(event.target.value);
-  }
+  };
 
-  const searchedStories = Stories.filter(story =>
+  const searchedStories = stories.filter(story =>
     story.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -49,52 +58,30 @@ const [searchTerm, setSearchTerm] = useSemiPersitentState(
 
       <hr />
 
-      <List list={searchedStories} />
+      <List list={searchedStories} onRemoveItem={handleRemoveStory} />
 
     </div>
   );
 }
-
-const List = ({ list }) =>
-  list.map(({ objectID, ...item }) => ( 
-    <Item key={objectID} {...item} />
-));
-    
-const Item = ({ title, author, num_comments, points, url, date }) => (
-    <div>
-
-      <span>
-        <a href={url}>{title}</a>
-      </span>
-      <span> Author: {author}</span>
-      <span> Comments: {num_comments}</span>
-      <span> Points: {points}</span>
-      <span> Date: {date}</span>
-
-    </div>
-);
 
 const InputWithLabel = ({ 
   id,
   value, 
   type = "text" , 
   onInputChange,
-  children,
   isFocused,
+  children,
 }) => {
-
   const inputRef = React.useRef();
 
   React.useEffect(() => {
-    if (isFocused && inputRef.current) {
+    if (isFocused) {
       inputRef.current.focus();
     }
-
-}, [isFocused]);
+  }, [isFocused]);
 
   return (
     <>
-
       <label htmlFor={id}> {children} </label>
       &nbsp;
       <input
@@ -102,11 +89,41 @@ const InputWithLabel = ({
         id={id}
         type={type}
         value={value} 
-        autoFocus={isFocused}
         onChange={onInputChange}
       />
-
     </>
   );
 }
+
+const List = ({ list, onRemoveItem }) =>
+  list.map(item => (
+    <Item
+      key={item.objectID}
+      item={item}
+      onRemoveItem={onRemoveItem}
+    />
+  ));
+    
+const Item = ({ item, onRemoveItem }) => (
+    <div>
+
+      <span>
+        <a href={item.url}>{item.title}</a>
+      </span>
+      <span> Author: {item.author}</span>
+      <span> Comments: {item.num_comments}</span>
+      <span> Points: {item.points}</span>
+      <span> Date: {item.date}</span>
+      <span>
+        <button type="button" onClick={() => onRemoveItem(item)}>
+          Dismiss
+        </button>
+      </span>
+
+    </div>
+  );
+
+
+
+
 export default App;

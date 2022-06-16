@@ -1,4 +1,4 @@
-const Stories = [
+const initialStories = [
     {
       title: 'React',
       url: 'https://reactjs.org/',
@@ -28,4 +28,4 @@ const Stories = [
     }
   ];
 
-  export default Stories;
+  export default initialStories;
