@@ -38,9 +38,15 @@ const [searchTerm, setSearchTerm] = useSemiPersitentState(
 
       <InputWithLabel 
         id="search"
-        label="Search"
         value={searchTerm} 
-        onInputChange={handleSearch} />
+        isFocused
+        onInputChange={handleSearch}
+      >
+
+        <strong>Search</strong>
+
+      </InputWithLabel> 
+
       <hr />
 
       <List list={searchedStories} />
@@ -69,28 +75,38 @@ const Item = ({ title, author, num_comments, points, url, date }) => (
 );
 
 const InputWithLabel = ({ 
-  id, 
-  label, 
+  id,
   value, 
   type = "text" , 
   onInputChange,
-}) => (
- 
-  <>
+  children,
+  isFocused,
+}) => {
 
-    <label htmlFor={id}> {label} </label>
-    &nbsp;
-    <input 
-      id={id}
-      type={type}
-      value={value} 
-      onChange={onInputChange}
-    />
+  const inputRef = React.useRef();
 
-  </>
-);
+  React.useEffect(() => {
+    if (isFocused && inputRef.current) {
+      inputRef.current.focus();
+    }
 
+}, [isFocused]);
 
+  return (
+    <>
 
+      <label htmlFor={id}> {children} </label>
+      &nbsp;
+      <input
+        ref={inputRef} 
+        id={id}
+        type={type}
+        value={value} 
+        autoFocus={isFocused}
+        onChange={onInputChange}
+      />
 
+    </>
+  );
+}
 export default App;
