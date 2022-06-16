@@ -36,7 +36,11 @@ const [searchTerm, setSearchTerm] = useSemiPersitentState(
       
       <h1>My Hacker Stories</h1>
 
-      <SearchInput search={searchTerm} onSearch={handleSearch} />
+      <InputWithLabel 
+        id="search"
+        label="Search"
+        value={searchTerm} 
+        onInputChange={handleSearch} />
       <hr />
 
       <List list={searchedStories} />
@@ -64,22 +68,27 @@ const Item = ({ title, author, num_comments, points, url, date }) => (
     </div>
 );
 
-const SearchInput = ({ search, onSearch }) => {
+const InputWithLabel = ({ 
+  id, 
+  label, 
+  value, 
+  type = "text" , 
+  onInputChange,
+}) => (
+ 
+  <>
 
-  return (
-    <div>
+    <label htmlFor={id}> {label} </label>
+    &nbsp;
+    <input 
+      id={id}
+      type={type}
+      value={value} 
+      onChange={onInputChange}
+    />
 
-      <label htmlFor="search">Search: </label>
-      <input 
-        id="search" 
-        type="text"
-        value={search} 
-        onChange={onSearch}
-      />
-
-    </div>
-  )
-};
+  </>
+);
 
 
 
